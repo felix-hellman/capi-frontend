@@ -31,6 +31,17 @@ class App extends Component {
       .then(response => this.setState({drinkstate: response.data.name}));
     this.checkStatus();
   }
+    orderVodkaCranberry(){
+        axios.get('http://10.46.1.193:2000/cranberryvodka'
+        ).then(response => this.setState({drinkstate: response.data.name}));
+        this.checkStatus();
+    }
+    orderVodka(){
+        axios.get('http://10.46.1.193:2000/vodka')
+        .then(response => this.setState({drinkstate: response.data.name}));
+        this.checkStatus();
+    }
+
 
   checkStatus() {
         axios.get('http://10.46.1.193:2000/status')
@@ -42,7 +53,12 @@ class App extends Component {
     return (
       <div className='button__container'>
         <p>Pump available : {this.state.orderstate} </p>
-        <button className='button' onClick={this.handleClick}>Order Drink</button>
+        <ul><li>
+        <button className='button' onClick={this.handleClick}>Order Trustly Special 6Cl</button></li>
+
+        <li><button className='button' onClick={this.orderVodkaCranberry}>Order Vodka Cranberry 6cl</button></li>
+        <li><button className='button' onClick={this.orderVodka}>Order Vodka 6cl</button></li>
+        </ul>
         <p>{this.state.drinkstate}</p>
       </div>
     )
