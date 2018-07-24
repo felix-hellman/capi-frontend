@@ -9,14 +9,38 @@ class App extends Component {
     this.state = {
       drinkstate: '',
       orderstate: '',
-      count: 0
+      count: 0,
+      buttonstate: [],
+      buttonfunctions: [],
+      buttons: []
     }
-
     this.handleClick = this.handleClick.bind(this)
   }
 
+    mockRecipieRequest(){
+        return JSON.stringify([
+            {"name":"ALLBERRY","ingredients": {"vodka": 13,"cranberry": 37}},
+            {"name":"IM COMING HOME PLS","ingredients": {"vodka": "kek","cranberry": 1239132}}
+        ]);
+    }
+
+    mockMakeDrinkRequest(payload){
+        console.log("I did thinks tho" + payload)
+    }
+
     componentDidMount(){
-        this.checkStatus()
+        let rec = JSON.parse(this.mockRecipieRequest())
+        let names = Object.keys(rec);
+        let list = []
+        names.forEach(e => {
+            console.log(e)
+            var f = new Function('', 'console.log("vodka, " + '+JSON.stringify(rec[e].ingredients.vodka)+');console.log("cranberry, " + '+JSON.stringify(rec[e].ingredients.cranberry)+' + "!");');
+            let element = React.createElement( "button", { className: 'button' , onClick: f,},rec[e].name);
+            let parent = React.createElement( "li" , {}, element);
+            list.push(parent);
+        });
+        this.setState({buttonstate: list})
+        this.checkStatus();
         this.timerId = setInterval(
             () => this.checkStatus(),
             3000
@@ -27,7 +51,7 @@ class App extends Component {
     }
 
   handleClick () {
-    axios.get('http://10.46.1.193:2000/demo')
+    axios.get(')http://10.46.1.193:2000/demo')
       .then(response => this.setState({drinkstate: response.data.name}));
     this.checkStatus();
   }
@@ -44,22 +68,18 @@ class App extends Component {
 
 
   checkStatus() {
-        axios.get('http://10.46.1.193:2000/status')
+        /*axios.get('http://10.46.1.193:2000/status')
          .then(response => this.setState({orderstate: JSON.stringify(response.data.Available)})
-         );
+         );*/
   }
 
   render () {
     return (
       <div className='button__container'>
         <p>Pump available : {this.state.orderstate} </p>
-        <ul><li>
-        <button className='button' onClick={this.handleClick}>Order Trustly Special 6Cl</button></li>
-
-        <li><button className='button' onClick={this.orderVodkaCranberry}>Order Vodka Cranberry 6cl</button></li>
-        <li><button className='button' onClick={this.orderVodka}>Order Vodka 6cl</button></li>
+        <ul>
+        {this.state.buttonstate}
         </ul>
-        <p>{this.state.drinkstate}</p>
       </div>
     )
   }
